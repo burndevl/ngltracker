@@ -1,2 +1,8 @@
 # ngltracker
+# FITUR : CAPTURE PHOTO, SHOW DEVICE, LOCATION TRACKER
+
+# THANKS BUAT ABANG GAB & ANES (FRONT END)
+
+# SOCIAL MEDIA CREATOR
+# IG: https://instagram.com/marvinltg_
 NGL SMALL PROJECT TRACKING 😮‍💨
