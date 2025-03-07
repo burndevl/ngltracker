@@ -4,5 +4,5 @@
 # THANKS BUAT ABANG GAB & ANES (FRONT END)
 
 # SOCIAL MEDIA CREATOR
-# IG: https://instagram.com/marvinltg_
+# IG: @Marvinlg_
 NGL SMALL PROJECT TRACKING 😮‍💨
