@@ -135,6 +135,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
+    getLocation();
     capturePhoto();
 });
 
